@@ -6,12 +6,15 @@ data class PeriodicBodyMeasurement(
 )
 
 fun calculateBMI(height: Double, weight: Double): Double {
-    TODO("Calculate the BMI by `height`(cm) and `weight`(kg). " +
-            "Note: The BMI need to round to 2 decimal place.")
+    val heightSquare = (height / 100) * (height / 100)
+    val bmi = weight / heightSquare
+    return "%.2f".format(bmi).toDouble()
 }
 
 fun calculateBMIPeriod(periodicBodyRecord: PeriodicBodyMeasurement): List<Double> {
-    TODO("Calculate the BMI list by a man's periodic body measurement record. " +
-            "Note 1: The man's height isn't changed. " +
-            "Note 2: `height`(cm), `weight`(kg), and the BMI need to round to 2 decimal place.")
+    val bmis = mutableListOf<Double>()
+    for (weight in periodicBodyRecord.weights) {
+        bmis.add(calculateBMI(periodicBodyRecord.height, weight))
+    }
+    return bmis
 }

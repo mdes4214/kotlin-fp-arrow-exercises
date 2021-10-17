@@ -8,4 +8,4 @@ fun customMetadataTagLens(): Lens<CustomMetadata, Tag> =
     TODO("Write a `Lens` which must be able to read and modify the `CustomMetadata` `tag` property.")
 
 fun CustomMetadata.updateTag(newTag: Tag): CustomMetadata =
-    TODO("Complete this `updateTag` function leverage the above `Lens`.")
+    TODO("Leverage the above `Lens` to complete this function.")

@@ -21,7 +21,7 @@ value class VideoFileExtension(val value: String)
 value class ImageFileExtension(val value: String)
 
 @JvmInline
-value class BitRate(val value: String)
+value class BitRateKBitPerS(val value: Int)
 
 @JvmInline
 value class Title(val value: String)
@@ -63,12 +63,12 @@ sealed class CustomFileFormat {
         companion object {}
 
         @optics
-        data class AudioFile(val extension: AudioFileExtension, val bitRate: BitRate) : MediaFile() {
+        data class AudioFile(val extension: AudioFileExtension, val bitRateKBitPerS: BitRateKBitPerS) : MediaFile() {
             companion object
         }
 
         @optics
-        data class VideoFile(val extension: VideoFileExtension, val bitRate: BitRate) : MediaFile() {
+        data class VideoFile(val extension: VideoFileExtension, val bitRateKBitPerS: BitRateKBitPerS) : MediaFile() {
             companion object
         }
 
@@ -88,5 +88,10 @@ data class CustomFile(
     val fileFormat: CustomFileFormat,
     val name: FileName,
 ) {
+    companion object
+}
+
+@optics
+data class CustomFiles (val customFiles: List<CustomFile>) {
     companion object
 }

@@ -1,3 +1,5 @@
+package playground
+
 val squareSum: (Int) -> ((Int) -> Int) = { x -> { y -> x*x + y*y }}
 // x -> (y -> x^2 + y^2)
 val stillSquareSum: (Int) -> (Int) -> Int = { x -> { y -> x*x + y*y }}

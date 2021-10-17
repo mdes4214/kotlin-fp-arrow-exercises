@@ -5,10 +5,13 @@ import arrow.optics.Iso
 import other.model.*
 
 fun customFileIso(): Iso<CustomFile, Tuple4<CustomHeader, Content, CustomFileFormat, FileName>> =
-    TODO("Write a `Iso` to convert from `CustomFile` to `Tuple4` `and reverse.")
+    Iso(
+        get = { customFile -> Tuple4(customFile.header, customFile.content, customFile.fileFormat, customFile.name) },
+        reverseGet = { tuple4 -> CustomFile(header = tuple4.first, content = tuple4.second, fileFormat = tuple4.third, name = tuple4.fourth) }
+    )
 
 fun CustomFile.toTuple4(): Tuple4<CustomHeader, Content, CustomFileFormat, FileName> =
-    TODO("Leverage the above `Iso` to complete this function.")
+    customFileIso().get(this)
 
 fun Tuple4<CustomHeader, Content, CustomFileFormat, FileName>.toCustomFile(): CustomFile =
-    TODO("Leverage the above `Iso` to complete this function.")
+    customFileIso().reverseGet(this)

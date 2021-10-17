@@ -1,7 +1,14 @@
 package ch3_optics.ex5_every
 
-import other.model.BitRateKBitPerS
-import other.model.CustomFiles
+import arrow.optics.Every
+import arrow.optics.dsl.every
+import other.model.*
 
 fun updateAllAudioBitRate(customFiles: CustomFiles, newBitRateKBitPerS: BitRateKBitPerS): CustomFiles =
-    TODO("Complete this function to update `bitRateKBitPerS` only if the file is `AudioFile`.")
+    CustomFiles.customFiles
+        .every(Every.list())
+        .fileFormat
+        .mediaFile
+        .audioFile
+        .bitRateKBitPerS
+        .set(customFiles, newBitRateKBitPerS)

@@ -1,11 +1,23 @@
 package ch3_optics.ex3_prism
 
+import arrow.core.left
+import arrow.core.right
 import arrow.optics.Prism
 import other.model.CustomFileFormat
 import other.model.DocumentFileExtension
+import other.model.documentFile
+import other.model.extension
 
 fun documentFilePrism(): Prism<CustomFileFormat, CustomFileFormat.DocumentFile> =
-    TODO("Write a `Prism` that is able to focus on an `CustomFileFormat` only when it is a `DocumentFile`.")
+    Prism(
+        getOrModify = { customFileFormat ->
+            when (customFileFormat) {
+                is CustomFileFormat.DocumentFile -> customFileFormat.right()
+                else -> customFileFormat.left()
+            }
+        },
+        reverseGet = { documentFile -> documentFile } // (::identity)
+    )
 
 fun CustomFileFormat.updateDocumentFileExtension(newExtension: DocumentFileExtension): CustomFileFormat =
-    TODO("Leverage the above `Prism` to complete this function.")
+    CustomFileFormat.documentFile.extension.modify(this) { newExtension }

@@ -1,9 +1,15 @@
 package ch3_optics.ex4_traversal
 
-import other.model.CustomFiles
-import other.model.Tag
+import arrow.optics.Traversal
+import other.model.*
 
 fun updateAllTag(customFiles: CustomFiles, newTag: Tag): CustomFiles {
-    TODO("Complete this function to update all the tags in `customFiles`. " +
-            "We may need to compose `Lens` and `Traversal`.")
+    val traversalTag =
+        CustomFiles.customFiles compose
+                Traversal.list() compose
+                CustomFile.header compose
+                CustomHeader.metadata compose
+                CustomMetadata.tag
+
+    return traversalTag.set(customFiles, newTag)
 }

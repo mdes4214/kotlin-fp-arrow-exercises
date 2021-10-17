@@ -21,7 +21,7 @@ fun createFruit(fruitName: String, weightGram: Int, fruitColor: String): String 
     )
 
     val repo = DBRepository()
-    repo.save(fruit)
+//    repo.save(fruit)
 
     // *** TODO section END ***
 

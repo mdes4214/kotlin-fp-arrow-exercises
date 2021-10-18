@@ -6,34 +6,10 @@ package ch2_domainmodeling.ex1_producttype
 //  This test will pass initially, but we want to simplify this class.
 // *** TODO section START ***
 
-class Fruit(
+data class Fruit(
     val name: String,
     val weight: Int,
     val color: String
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as Fruit
-
-        if (name != other.name) return false
-        if (weight != other.weight) return false
-        if (color != other.color) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + weight
-        result = 31 * result + color.hashCode()
-        return result
-    }
-
-    override fun toString(): String {
-        return "Fruit(name=$name, weight=$weight, color=$color)"
-    }
-}
+)
 
 // *** TODO section END ***

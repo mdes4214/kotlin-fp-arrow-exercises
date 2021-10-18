@@ -7,7 +7,7 @@ package ch1_functionalprogramming.ex3_highorderfunction
 //  The `op` should be changed to a function type.
 // *** TODO section START ***
 
-fun createUUID(userName: String, userID: String, op: Any): String =
-    "${userID}_$userName"
+fun createUUID(userName: String, userID: String, op: (String, String) -> String): String =
+    op(userName, userID)
 
 // *** TODO section END ***

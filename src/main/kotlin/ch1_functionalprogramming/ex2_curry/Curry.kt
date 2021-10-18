@@ -17,12 +17,19 @@ data class Fruit(
 //  3. (String) -> (String) -> ((Int) -> Fruit)
 // *** TODO section START ***
 
-fun createFruit(fruitName: String, fruitColor: String, fruitWeight: Int): Fruit =
-    Fruit(name = fruitName, weight = fruitWeight, color = fruitColor)
-
-fun createFruits(fruitName: String, fruitColor: String, fruitWeights: List<Int>): List<Fruit> =
-    fruitWeights.map { fruitWeight ->
-        createFruit(fruitName, fruitColor, fruitWeight)
+val createFruit: (String) -> (String) -> (Int) -> Fruit = { fruitName ->
+    { fruitColor ->
+        { fruitWeight ->
+            Fruit(name = fruitName, weight = fruitWeight, color = fruitColor)
+        }
     }
+}
+
+fun createFruits(fruitName: String, fruitColor: String, fruitWeights: List<Int>): List<Fruit> {
+    val createFruitByWeight = createFruit(fruitName)(fruitColor)
+    return fruitWeights.map { fruitWeight ->
+        createFruitByWeight(fruitWeight)
+    }
+}
 
 // *** TODO section END ***

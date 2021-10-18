@@ -12,5 +12,8 @@ fun <A> processState(
     processError: (State.Error) -> Unit,
     processSuccess: (State.Success<A>) -> Unit,
 ): Unit =
-    TODO("Call the input function depends on the `state`. " +
-            "i.e. If the `state` is `Cancelled`, then call `processCancelled()` function, and so on.")
+    when (state) {
+        is State.Cancelled -> processCancelled(state)
+        is State.Error -> processError(state)
+        is State.Success -> processSuccess(state)
+    }

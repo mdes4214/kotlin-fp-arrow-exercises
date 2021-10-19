@@ -36,4 +36,7 @@ class Fruit(
     }
 }
 
+fun Fruit.updateWeight(newWeight: Int): Fruit =
+    TODO("Update the weight of Fruit and return a new instance.")
+
 // *** TODO section END ***

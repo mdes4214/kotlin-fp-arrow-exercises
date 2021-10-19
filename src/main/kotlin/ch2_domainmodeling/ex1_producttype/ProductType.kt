@@ -12,4 +12,7 @@ data class Fruit(
     val color: String
 )
 
+fun Fruit.updateWeight(newWeight: Int): Fruit =
+    this.copy(weight = newWeight)
+
 // *** TODO section END ***

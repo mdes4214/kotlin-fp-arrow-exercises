@@ -9,6 +9,12 @@ Exercises and practice code for Functional Programming learning in Kotlin with A
   - Kotlin Plugin: 1.5.x
   - JDK 11
 
+## Getting Started
+
+- Try to **pass all the tests** in `exercise` package.
+
+- Before the first run, please remember to execute `maven compile` for `@optics`.
+
 ## Slides and Notes
 
 - ch 0.

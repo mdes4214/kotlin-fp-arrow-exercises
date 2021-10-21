@@ -5,8 +5,8 @@ Exercises and practice code for Functional Programming learning in Kotlin with A
 ## Requirements
 
 - IntelliJ IDEA with
-  - Maven: ^3.6.x
-  - Kotlin Plugin: 1.5.x
+  - Maven `^3.6.x`
+  - Kotlin Plugin `1.5.x`
   - JDK 11
 
 ## Getting Started

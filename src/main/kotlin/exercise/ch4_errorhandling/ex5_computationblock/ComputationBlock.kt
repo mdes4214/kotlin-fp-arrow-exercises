@@ -3,13 +3,6 @@ package exercise.ch4_errorhandling.ex5_computationblock
 import arrow.core.*
 import other.model.*
 
-// TODO:
-//  -
-// hint:
-//  -
-// *** TODO section START ***
-// *** TODO section END ***
-
 sealed class Error {
     data class FileNotFoundError(val msg: String) : Error()
     object ExternalError : Error()

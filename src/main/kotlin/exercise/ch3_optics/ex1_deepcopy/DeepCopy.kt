@@ -13,7 +13,7 @@ enum class Tag {
 }
 
 // TODO:
-//  The operation of nested `data class` sometimes is ugly, e.g. deep copy.
+//  The operation of nested `data class` sometimes is ugly, e.g., deep copy.
 //  Thus, please try to refactor these `data class` with `@optics`.
 // hint:
 //  This test will pass initially, but we want to refactor it with `@optics`.

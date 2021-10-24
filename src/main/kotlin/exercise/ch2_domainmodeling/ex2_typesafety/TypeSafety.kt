@@ -2,9 +2,9 @@ package exercise.ch2_domainmodeling.ex2_typesafety
 
 // TODO:
 //  Without domain modeling, sometimes we may be confused by the type.
-//  e.g. `val weight: Int = 260`, is this 260g? or 260kg?
+//  e.g., `val weight: Int = 260`, is this 260g? or 260kg?
 //  It will be more clearly and safer if we model the type by domain.
-//  i.e. `val weight: WeightGram = WeightGram(260)`, yeah now I know it's 260g.
+//  i.e., `val weight: WeightGram = WeightGram(260)`, yeah now I know it's 260g.
 //  Please try to model data types in `MyFile` as above description.
 // hint:
 //  The `Title` is for an example.

@@ -3,6 +3,7 @@ package exercise.ch4_errorhandling.ex2_erroraccumulation
 import arrow.core.ValidatedNel
 import arrow.core.invalidNel
 import arrow.core.validNel
+import arrow.core.zip
 import other.model.SimpleFile
 import other.model.Tag
 
@@ -37,10 +38,23 @@ fun validateExtension(extension: String): ValidatedNel<Error.ValidationError.Ext
     }
 
 fun validateName(name: String): ValidatedNel<Error.ValidationError.NameInvalidError, String> =
-    TODO("Invalidate the `name` if it's blank, otherwise it's valid. This is similar with above validation functions.")
+    if (name.isBlank()) {
+        Error.ValidationError.NameInvalidError.invalidNel()
+    } else {
+        name.validNel()
+    }
 
 fun validateInputFields(name: String, extension: String, author: String, tag: String): ValidatedNel<Error.ValidationError, SimpleFile> =
-    TODO("`zip` all the validated result with above four validation functions.")
+    validateName(name).zip(
+        validateExtension(extension),
+        validateAuthor(author),
+        validateTag(tag)
+    ) { validName, validExtension, validAuthor, validTag ->
+        SimpleFile(validName, validExtension, validAuthor, validTag)
+    }
 
 fun evaluateValidatedName(validatedName: ValidatedNel<Error.ValidationError.NameInvalidError, String>): String =
-    TODO("Evaluate the `validatedName`. Return `toString()` whether the result is invalid or valid.")
+    validatedName.fold(
+        fe = { it.toString() },
+        fa = { it }
+    )

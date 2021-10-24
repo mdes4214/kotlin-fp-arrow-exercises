@@ -1,6 +1,7 @@
 package exercise.ch4_errorhandling.ex4_traverse
 
 import arrow.core.Either
+import arrow.core.traverseEither
 import other.model.FileNotFoundException
 import other.model.SimpleFile
 import other.model.SimpleFileStorage
@@ -29,7 +30,7 @@ fun findFilesByFileNameInefficient(fileNames: List<String>): List<Either<Error, 
     fileNames.map { findFileByFileNameSafely(it) }
 
 fun findFilesByFileNameEfficient(fileNames: List<String>): Either<Error, List<SimpleFile>> =
-    TODO("Call `findFileByFileNameSafely()` and flatten the result, i.e., from `List<Either<E, A>>` to `Either<E, List<A>>`.")
+    fileNames.traverseEither { findFileByFileNameSafely(it) }
 
 fun evaluateFilesByFileName(fileNames: List<String>): String =
     findFilesByFileNameEfficient(fileNames).fold(

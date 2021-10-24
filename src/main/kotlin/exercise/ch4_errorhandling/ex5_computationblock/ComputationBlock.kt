@@ -1,6 +1,7 @@
 package exercise.ch4_errorhandling.ex5_computationblock
 
 import arrow.core.*
+import arrow.core.computations.either
 import other.model.*
 
 sealed class Error {
@@ -76,9 +77,21 @@ fun findTagWithDefault(tag: String?, defaultTag: Tag): Option<Tag> =
         .handleError { defaultTag }
 
 fun createSafeSimpleFile(fileName: String, fileExtension: String): Either<Error, SafeSimpleFile> =
-    TODO("We want to do some tasks in sequence to create a `SafeSimpleFile`. Try to compose them with `either.eager {}`:\n" +
-            "1. Validate the input `fileName` and `fileExtension` with calling `validateInputFields()`.\n" +
-            "2. Find the file in storage with calling `findFileByFileNameSafely()`.\n" +
-            "3. Find the valid enum value of `tag` or return `defaultTag` if it's invalid, with calling `findTagWithDefault()`. " +
-            "   Note that you need to use `TagInvalidError` while converting `Option` to `Either` for binding.\n " +
-            "4. Create a `SafeSimpleFile` with above results.")
+    either.eager {
+        val validatedNameAndExtension = validateInputFields(fileName, fileExtension).toDomainError().bind()
+        val foundSimpleFile =
+            findFileByFileNameSafely(validatedNameAndExtension.first, validatedNameAndExtension.second).bind()
+        val foundTag = findTagWithDefault(
+            foundSimpleFile.tag,
+            Tag.TYPE_C
+        ).toEither(
+            ifEmpty = { Error.ValidationError.TagInvalidError }
+        ).bind()
+
+        SafeSimpleFile(
+            FileName(foundSimpleFile.name),
+            FileExtension(foundSimpleFile.extension),
+            Author(foundSimpleFile.author),
+            foundTag
+        )
+    }

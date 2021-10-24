@@ -14,11 +14,15 @@ fun findInTag(tag: String): Tag? =
     Tag.values().find { it.name == tag }
 
 fun findInTagSafely(tag: String): Option<Tag> =
-    TODO("Call `findInTag()` and handle the nullable value with `Option`.")
+    Option.fromNullable(findInTag(tag))
 
 fun findInTagSafelyWithError(tag: String): Either<Error, Tag> =
-    TODO("Call `findInTagSafely()` and convert the `Option` to `Either`. Map to the `TagInvalidError` if the value doesn't exist.")
+    findInTagSafely(tag).toEither(
+        ifEmpty = { Error.ValidationError.TagInvalidError }
+    )
 
 fun evaluateOptionalTag(optionalTag: Option<Tag>): String =
-    TODO("Evaluate the `optionalTag`. Return the string `EMPTY` if the value doesn't exist, otherwise return `toString()`.")
-
+    optionalTag.fold(
+        ifEmpty = { "EMPTY" },
+        ifSome = { it.toString() }
+    )

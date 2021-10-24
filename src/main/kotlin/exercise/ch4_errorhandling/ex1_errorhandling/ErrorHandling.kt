@@ -1,6 +1,7 @@
 package exercise.ch4_errorhandling.ex1_errorhandling
 
 import arrow.core.Either
+import arrow.core.right
 import other.model.FileNotFoundException
 import other.model.SimpleFile
 import other.model.SimpleFileStorage
@@ -24,26 +25,38 @@ val simpleFileStorage = SimpleFileStorage()
 // *** TODO section START ***
 
 fun findFileByFileNameSafely(fileName: String): Either<Error, SimpleFile> =
-    TODO("`simpleFileStorage.findFileByFileName(fileName)` may cause exception we don't want to see. " +
-            "Try to handle it and return `Either<Error, SimpleFile>`.")
-    // hint:
-    //  1. Try `Either.catch {}` and `mapLeft {}`.
-    //  2. Remember to map the exception to domain error with `toDomain()`.
+    Either.catch {
+        simpleFileStorage.findFileByFileName(fileName)
+    }.mapLeft { e ->
+        e.toDomain()
+    }
 
 fun findTagByFileNameSafely(fileName: String): Either<Error, String> =
-    TODO("`simpleFileStorage.findTagByFileName(fileName)` may return null `tag`. " +
-            "Try to handle it and return `Either<Error, String>`.")
-    // hint:
-    //  1. Try `Either.fromNullable {}` and `mapLeft {}`.
-    //  2. The null value should be mapped to `Error.NullTagError`
-    //  3. [Advanced] What will happen when file is not found?
+    Either.fromNullable(simpleFileStorage.findTagByFileName(fileName)).mapLeft { Error.NullTagError }
+// [Advanced]
+//    Either.catch {
+//        simpleFileStorage.findTagByFileName(fileName)
+//    }.mapLeft { e ->
+//        e.toDomain()
+//    }.flatMap { tag ->
+//        Either.fromNullable(tag).mapLeft { Error.NullTagError }
+//    }
 
 fun findTagByFileNameSafely(fileName: String, defaultTag: String): Either<Error, String> =
-    TODO("Mostly the same as above, but this function needs to return the `defaultTag` if the `tag` we found is null.")
-    // hint:
-    //  1. Call the above function `findTagByFileNameSafely(fileName)`
-    //  2. Try `fold()` to evaluate the `Either` of tag.
-    //  3. Return `defaultTag` if `NullTagError` happened.
-    //  4. [Advanced] What will happen when file is not found?
+    findTagByFileNameSafely(fileName).fold(
+        ifLeft = { defaultTag.right() },
+        ifRight = { it.right() }
+    )
+//    findTagByFileNameSafely(fileName).handleError { defaultTag }
+// [Advanced]
+//    findTagByFileNameSafely(fileName).fold(
+//        ifLeft = { e ->
+//            when(e) {
+//                is Error.NullTagError -> defaultTag.right()
+//                else -> e.left()
+//            }
+//        },
+//        ifRight = { it.right() }
+//    )
 
 // *** TODO section END ***

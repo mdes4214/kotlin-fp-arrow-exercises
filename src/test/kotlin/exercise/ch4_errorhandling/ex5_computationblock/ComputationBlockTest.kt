@@ -14,23 +14,24 @@ class ComputationBlockTest {
     fun testCreateSimpleFileSafely() {
         val fileName1 = "Domain Modeling Made Functional"
         val fileExtension1 = ".pdf"
+        val defaultTag = Tag.TYPE_C
         val expected1 = SafeSimpleFile(
             FileName(fileName1),
             FileExtension(fileExtension1),
             Author("Scott Wlaschin"),
-            Tag.TYPE_C
+            defaultTag
         )
-        println(createSafeSimpleFile(fileName1, fileExtension1))
-        Assertions.assertEquals(expected1.right(), createSafeSimpleFile(fileName1, fileExtension1), "The file [$fileName1$fileExtension1] should be found and update to [TYPE_C].")
+        println(createSafeSimpleFile(fileName1, fileExtension1, defaultTag))
+        Assertions.assertEquals(expected1.right(), createSafeSimpleFile(fileName1, fileExtension1, defaultTag), "The file [$fileName1$fileExtension1] should be found and update to [TYPE_C].")
 
         val fileName2 = "Domain Modeling Made Functional"
         val fileExtension2 = ""
-        println(createSafeSimpleFile(fileName2, fileExtension2))
-        Assertions.assertEquals(Error.InvalidInputFieldsError(nel = nonEmptyListOf(Error.ValidationError.ExtensionInvalidError)).left(), createSafeSimpleFile(fileName2, fileExtension2), "File [$fileName2$fileExtension2] is invalid.")
+        println(createSafeSimpleFile(fileName2, fileExtension2, defaultTag))
+        Assertions.assertEquals(Error.InvalidInputFieldsError(nel = nonEmptyListOf(Error.ValidationError.ExtensionInvalidError)).left(), createSafeSimpleFile(fileName2, fileExtension2, defaultTag), "File [$fileName2$fileExtension2] is invalid.")
 
         val fileName3 = "Design Pattern"
         val fileExtension3 = ".pdf"
-        println(createSafeSimpleFile(fileName3, fileExtension3))
-        Assertions.assertEquals(Error.FileNotFoundError(msg = "File [$fileName3$fileExtension3] is not found in storage.").left(), createSafeSimpleFile(fileName3, fileExtension3), "File [$fileName3$fileExtension3] not found.")
+        println(createSafeSimpleFile(fileName3, fileExtension3, defaultTag))
+        Assertions.assertEquals(Error.FileNotFoundError(msg = "File [$fileName3$fileExtension3] is not found in storage.").left(), createSafeSimpleFile(fileName3, fileExtension3, defaultTag), "File [$fileName3$fileExtension3] not found.")
     }
 }

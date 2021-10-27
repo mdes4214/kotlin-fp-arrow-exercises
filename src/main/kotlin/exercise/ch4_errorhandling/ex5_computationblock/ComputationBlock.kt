@@ -76,14 +76,14 @@ fun findTagWithDefault(tag: String?, defaultTag: Tag): Option<Tag> =
     Option.fromNullable(findInTag(tag))
         .handleError { defaultTag }
 
-fun createSafeSimpleFile(fileName: String, fileExtension: String): Either<Error, SafeSimpleFile> =
+fun createSafeSimpleFile(fileName: String, fileExtension: String, defaultTag: Tag): Either<Error, SafeSimpleFile> =
     either.eager {
         val validatedNameAndExtension = validateInputFields(fileName, fileExtension).toDomainError().bind()
         val foundSimpleFile =
             findFileByFileNameSafely(validatedNameAndExtension.first, validatedNameAndExtension.second).bind()
         val foundTag = findTagWithDefault(
             foundSimpleFile.tag,
-            Tag.TYPE_C
+            defaultTag
         ).toEither(
             ifEmpty = { Error.ValidationError.TagInvalidError }
         ).bind()

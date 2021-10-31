@@ -21,4 +21,12 @@ class SimpleFileStorage {
         } catch (e: Exception) {
             throw e
         }
+
+    companion object {
+        suspend fun open(): SimpleFileStorage = SimpleFileStorage().also { println("SimpleFileStorage opened") }
+    }
+
+    suspend fun close(): Unit = println("SimpleFileStorage closed")
+
+    suspend fun loadFile(fileName: String): SimpleFile = this.findFileByFileName(fileName)
 }

@@ -1,7 +1,10 @@
 package exercise.ch6_resourcehandling.ex2_resource
 
 import arrow.fx.coroutines.ExitCase
+import arrow.fx.coroutines.Resource
+import arrow.fx.coroutines.parTraverse
 import other.model.SimpleFile
+import other.model.SimpleFileStorage
 
 suspend fun loadFilesSafely(
     fileNames: List<String>,
@@ -9,7 +12,17 @@ suspend fun loadFilesSafely(
     canceledHandler: (ExitCase.Cancelled) -> Unit,
     failureHandler: (ExitCase.Failure) -> Unit
 ): List<SimpleFile> {
-    TODO("Try to practice `Resource`." +
-            "Same as ex1_bracketcase, but this time we have several files need to find by a list of file name. \n" +
-            "hint: Try to use `parTraverse` of `List` when use the resource.")
+    val resource = Resource(
+        acquire = { SimpleFileStorage.open() },
+        release = { db, exitCase ->
+            when(exitCase) {
+                is ExitCase.Completed -> { completedHandler(exitCase) }
+                is ExitCase.Cancelled -> { canceledHandler(exitCase) }
+                is ExitCase.Failure -> { failureHandler(exitCase) }
+            }
+            db.close()
+        }
+    )
+
+    return fileNames.parTraverse { fileName -> resource.use { db -> db.loadFile(fileName) } }
 }

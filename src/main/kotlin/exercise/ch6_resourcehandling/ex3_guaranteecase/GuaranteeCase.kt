@@ -2,6 +2,9 @@ package exercise.ch6_resourcehandling.ex3_guaranteecase
 
 import arrow.fx.coroutines.ExitCase
 import arrow.fx.coroutines.guaranteeCase
+import arrow.fx.coroutines.parZip
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 
 suspend fun taskA(exitCaseHandler: (ExitCase) -> Unit): Unit =
@@ -20,9 +23,17 @@ suspend fun runJobWithTasks(jobDelayTimeMS: Long): List<ExitCase> {
     val result: MutableList<ExitCase> = mutableListOf()
     val exitCaseHandler: (ExitCase) -> Unit = { result.add(it) }
 
-    TODO("Try to create a async job in a `CoroutineScope` to run taskA and taskB in parallel. \n" +
-            "Before the end of the scope, please call `delay(jobDelayTimeMS)` and then *cancel* the job. \n" +
-            "hint: Try to use `parZip` to compose the two tasks.")
+    coroutineScope {
+        val job = async {
+            parZip(
+                { taskA(exitCaseHandler) },
+                { taskB(exitCaseHandler) }
+            ) { _, _ -> }
+        }
+
+        delay(jobDelayTimeMS)
+        job.cancel()
+    }
 
     return result
 }

@@ -1,7 +1,9 @@
 package exercise.ch6_resourcehandling.ex1_bracketcase
 
 import arrow.fx.coroutines.ExitCase
+import arrow.fx.coroutines.bracketCase
 import other.model.SimpleFile
+import other.model.SimpleFileStorage
 
 suspend fun loadFileSafely(
     fileName: String,
@@ -9,9 +11,15 @@ suspend fun loadFileSafely(
     canceledHandler: (ExitCase.Cancelled) -> Unit,
     failureHandler: (ExitCase.Failure) -> Unit
 ): SimpleFile =
-    TODO("Try to practice `bracketCase`. \n" +
-            "There are `open`, `loadFile(fileName)`, `close` functions in resource `SimpleFileStorage`, " +
-            "please call them when acquire, use, release the resource respectively. \n" +
-            "Also, please call the handler functions corresponding to `ExitCase` before close the resource, " +
-            "e.g., when `ExitCase.Completed`, call `completedHandler(exitCase)`")
-
+    bracketCase(
+        acquire = { SimpleFileStorage.open() },
+        use = { db -> db.loadFile(fileName) },
+        release = { db, exitCase ->
+            when(exitCase) {
+                is ExitCase.Completed -> { completedHandler(exitCase) }
+                is ExitCase.Cancelled -> { canceledHandler(exitCase) }
+                is ExitCase.Failure -> { failureHandler(exitCase) }
+            }
+            db.close()
+        }
+    )

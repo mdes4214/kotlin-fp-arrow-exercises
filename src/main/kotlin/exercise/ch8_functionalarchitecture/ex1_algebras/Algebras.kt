@@ -20,25 +20,34 @@ sealed class Error {
 //  3. Adjust the function calling way in `updateOnlineFileTag()` to use the implementation class.
 // *** TODO section START ***
 
-suspend fun downloadFile(fileName: FileName): Either<Error.FileNotFound, CustomFile> =
-    CustomFile(
-        header = CustomHeader(CustomMetadata(Tag.TYPE_C, Title("Note A"), Author("Joe"))),
-        content = Content("Note A Content"),
-        fileFormat = CustomFileFormat.DocumentFile(DocumentFileExtension(".doc")),
-        name = FileName("Note_A")
-    ).right()
+interface FileOps {
+    suspend fun downloadFile(fileName: FileName): Either<Error.FileNotFound, CustomFile>
+    suspend fun updateTag(file: CustomFile, newTag: Tag): Either<Error.InvalidTag, CustomFile>
+    suspend fun uploadFile(file: CustomFile): Either<Error.UploadFileError, CustomFile>
+}
 
-suspend fun updateTag(file: CustomFile, newTag: Tag): Either<Error.InvalidTag, CustomFile> =
-    CustomFile.header.metadata.tag.set(file, newTag).right()
+class FileService: FileOps {
+    override suspend fun downloadFile(fileName: FileName): Either<Error.FileNotFound, CustomFile> =
+        CustomFile(
+            header = CustomHeader(CustomMetadata(Tag.TYPE_C, Title("Note A"), Author("Joe"))),
+            content = Content("Note A Content"),
+            fileFormat = CustomFileFormat.DocumentFile(DocumentFileExtension(".doc")),
+            name = FileName("Note_A")
+        ).right()
 
-suspend fun uploadFile(file: CustomFile): Either<Error.UploadFileError, CustomFile> =
-    file.right()
+    override suspend fun updateTag(file: CustomFile, newTag: Tag): Either<Error.InvalidTag, CustomFile> =
+        CustomFile.header.metadata.tag.set(file, newTag).right()
+
+    override suspend fun uploadFile(file: CustomFile): Either<Error.UploadFileError, CustomFile> =
+        file.right()
+}
 
 suspend fun updateOnlineFileTag(fileName: FileName, newTag: Tag): Either<Error, CustomFile> {
+    val fileService = FileService()
     val updatedFile = either<Error, CustomFile> {
-        val file = downloadFile(fileName).bind()
-        val updatedFile = updateTag(file, newTag).bind()
-        val uploadedFile = uploadFile(updatedFile).bind()
+        val file = fileService.downloadFile(fileName).bind()
+        val updatedFile = fileService.updateTag(file, newTag).bind()
+        val uploadedFile = fileService.uploadFile(updatedFile).bind()
         uploadedFile
     }
     return updatedFile

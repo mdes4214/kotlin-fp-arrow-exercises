@@ -61,36 +61,40 @@ class TagRepository : TagDBOps {
 //  3. In `loadFilesAndUpdateTagWithDependencies()`, try to use object expression to create an instance of the abstract class instead of newing dependencies directly.
 // *** TODO section START ***
 
-suspend fun findAllTags(tagRepository: TagDBOps): Either<Error, List<Tag>> =
+abstract class Dependencies {
+    val authorService: AuthorServiceOps by lazy { AuthorService() }
+    val fileService: FileServiceOps by lazy { FileService() }
+    val tagRepository: TagDBOps by lazy { TagRepository() }
+}
+
+suspend fun Dependencies.findAllTags(): Either<Error, List<Tag>> =
     Either.catch {
         tagRepository.findAll()
     }.mapLeft { Error.TagNotFound }
 
-suspend fun loadAuthors(authorService: AuthorServiceOps): Either<Error, List<Author>> =
+suspend fun Dependencies.loadAuthors(): Either<Error, List<Author>> =
     Either.catch {
         authorService.loadAuthors()
     }.mapLeft { Error.AuthorNotFound }
 
-suspend fun findFilesByAuthor(fileService: FileServiceOps, authors: List<Author>): Either<Error, List<CustomFile>> =
+suspend fun Dependencies.findFilesByAuthor(authors: List<Author>): Either<Error, List<CustomFile>> =
     Either.catch {
         fileService.findFilesByAuthor(authors)
     }.mapLeft { Error.FileNotFound }
 
-suspend fun loadFilesAndUpdateTag(fileService: FileServiceOps, authorService: AuthorServiceOps, tagRepository: TagDBOps): Either<Error, List<CustomFile>> =
+suspend fun Dependencies.loadFilesAndUpdateTag(): Either<Error, List<CustomFile>> =
     either {
-        val authors = loadAuthors(authorService).bind()
-        val files = findFilesByAuthor(fileService, authors).bind()
-        val tags = findAllTags(tagRepository).bind()
+        val authors = loadAuthors().bind()
+        val files = findFilesByAuthor(authors).bind()
+        val tags = findAllTags().bind()
         files.map {
             CustomFile.header.metadata.tag.set(it, tags.first())
         }
     }
 
 suspend fun loadFilesAndUpdateTagWithDependencies(): Either<Error, List<CustomFile>> {
-    val fileService = FileService()
-    val authorService = AuthorService()
-    val tagRepository = TagRepository()
-    return loadFilesAndUpdateTag(fileService, authorService, tagRepository)
+    val deps = object : Dependencies() {}
+    return deps.loadFilesAndUpdateTag()
 }
 
 // *** TODO section END ***

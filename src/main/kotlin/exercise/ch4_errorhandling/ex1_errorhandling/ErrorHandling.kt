@@ -34,7 +34,7 @@ fun findTagByFileNameSafely(fileName: String): Either<Error, String> =
     TODO("`simpleFileStorage.findTagByFileName(fileName)` may return null `tag`. " +
             "Try to handle it and return `Either<Error, String>`.")
     // hint:
-    //  1. Try `Either.fromNullable {}` and `mapLeft {}`.
+    //  1. Try `Either.fromNullable()` and `mapLeft {}`.
     //  2. The null value should be mapped to `Error.NullTagError`
     //  3. [Advanced] What will happen when file is not found?
 
